@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Disease Recognition</title>
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+
+  <style>
+      html, body {
+    background: #0f0f0f !important;
+    color: #e6e6e6 !important;
+    height: 100%;
+}
+
+        
+body {
+    background: #0f0f0f;
+    color: #e6e6e6;
+    font-family: "Inter", sans-serif;
+}
+
+/* NAVBAR */
+.navbar { 
+    background: #1b5e20 !important; 
+}
+.navbar-brand strong { 
+    color: #fff; 
+}
+
+/* HERO SECTION */
+.hero { 
+    text-align: center; 
+    padding: 50px 20px; 
+}
+.hero h1 { 
+    color: #66bb6a; 
+    font-weight: 700; 
+}
+.hero p { 
+    color: #cccccc; 
+}
+
+/* CENTERED UPLOAD CARD */
+.upload-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+.upload-card {
+    width: 100%;
+    max-width: 500px;
+    padding: 30px;
+    background: #1a1a1a;
+    border-radius: 18px;
+    border: 1px solid #333;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.7);
+    text-align: center;
+}
+
+/* DRAG AREA */
+.drag-area {
+    border: 2px dashed #43a047;
+    padding: 30px;
+    border-radius: 14px;
+    background: #111;
+    transition: 0.3s;
+    cursor: pointer;
+}
+.drag-area:hover { 
+    background: #161616; 
+}
+
+.drag-area img {
+    display: none;
+    max-width: 100%;
+    max-height: 260px;
+    border-radius: 12px;
+}
+
+/* HIDE INPUT */
+#fileInput {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+/* BUTTON */
+.btn-success {
+    background: #2e7d32;
+    border: none;
+    padding: 12px;
+    font-size: 17px;
+    border-radius: 10px;
+    color: #fff;
+}
+.btn-success:hover {
+    background: #1b5e20;
+}
+
+/* RESULT CARD (Dark Theme) */
+.result-card {
+    width: 90%;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 25px;
+    background: #1a1a1a;
+    border-radius: 18px;
+    border: 1px solid #333;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.7);
+    display: flex;
+    gap: 25px;
+    align-items: flex-start;
+}
+
+/* Result image */
+.result-card img {
+    width: 280px;
+    height: auto;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+/* Result text */
+.result-card h3 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: #66bb6a;
+}
+
+.result-card p {
+    line-height: 1.6;
+    margin-bottom: 8px;
+    color: #dddddd;
+}
+
+
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            
+            <strong>AgroKrishi</strong>
+        </a>
+    </div>
+</nav>
+
+<div class="hero">
+    <h1>🌿 Plant Disease Recognition</h1>
+    <p>Upload a plant leaf image to detect disease.</p>
+</div>
+
+<!-- UPLOAD SECTION -->
+<div class="upload-wrapper">
+    <div class="upload-card">
+
+        <form action="/upload/" method="POST" enctype="multipart/form-data">
+
+            <label for="fileInput" class="drag-area">
+                <img id="preview">
+                <p class="fw-bold text-success" id="text-title">Drag & Drop Image Here</p>
+                <p class="text-muted" id="text-sub">or click to browse</p>
+            </label>
+
+            <input id="fileInput" type="file" name="img" accept="image/*" required onchange="previewImage(event)">
+
+            <button class="btn btn-success w-100 mt-3">Analyze Disease</button>
+        </form>
+
+    </div>
+</div>
+
+{% if result %}
+<div class="result-card">
+    <img src="{{imagepath}}" alt="Uploaded Image">
+    <div>
+        <h3 class="text-success">{{ prediction['name'] }}</h3>
+        <p><strong>Cause:</strong> {{ prediction['cause'] }}</p>
+        <p><strong>Cure:</strong> {{ prediction['cure'] }}</p>
+    </div>
+</div>
+{% endif %}
+
+<script>
+function previewImage(event) 
+{
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(e) 
+    {
+        const img = document.getElementById("preview");
+        img.src = e.target.result;
+        img.style.display = "block";
+
+        // hide text
+        document.getElementById("text-title").style.display = "none";
+        document.getElementById("text-sub").style.display = "none";
+    };
+
+    reader.readAsDataURL(file);
+}
+</script>
+
+</body>
+</html>
